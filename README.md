@@ -1,3 +1,3 @@
 # android-debugging-challenges
 
-<img src='https://i.imgur.com/k0bWKvh.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://i.imgur.com/t3tu5hT.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
