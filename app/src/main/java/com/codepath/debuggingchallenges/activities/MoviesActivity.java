@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
@@ -23,35 +24,42 @@ public class MoviesActivity extends AppCompatActivity {
 
     private static final String API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
 
-    RecyclerView rvMovies;
-    MoviesAdapter adapter;
+    //RecyclerView rvMovies;
+    //MoviesAdapter adapter;
     ArrayList<Movie> movies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
-        rvMovies = findViewById(R.id.rvMovies);
+        RecyclerView rvMovies = findViewById(R.id.rvMovies);
+        movies = new ArrayList<>();
 
         // Create the adapter to convert the array to views
-        MoviesAdapter adapter = new MoviesAdapter(movies);
+        MoviesAdapter movieAdapter = new MoviesAdapter(this, movies);
 
         // Attach the adapter to a ListView
-        rvMovies.setAdapter(adapter);
+        rvMovies.setAdapter(movieAdapter);
+        rvMovies.setLayoutManager(new LinearLayoutManager(this));
 
-        fetchMovies();
+
+        fetchMovies(movieAdapter);
     }
 
 
-    private void fetchMovies() {
-        String url = " https://api.themoviedb.org/3/movie/now_playing?api_key=";
+    private void fetchMovies(final MoviesAdapter movieAdapter) {
+        String url = " https://api.themoviedb.org/3/movie/now_playing?api_key=" + API_KEY;
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON response) {
                 try {
+                    Log.d("Movies","success");
                     JSONArray moviesJson = response.jsonObject.getJSONArray("results");
-                    movies = Movie.fromJSONArray(moviesJson);
+                    Log.d("Movies","results= " + moviesJson.toString());
+                    movies.addAll(Movie.fromJSONArray(moviesJson));
+                    Log.d("Movies", "" + movies.size());
+                    movieAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
